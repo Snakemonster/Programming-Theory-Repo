@@ -1,45 +1,54 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Gun : MonoBehaviour
 {
-    [SerializeField] private int _maxAmmo;
     [SerializeField] private GunConditions _currentGunConditions;
-    [SerializeField] protected GunMode _currentGunMode;
-    public int Ammo;
+    [SerializeField] private GameObject _bullet;
+    [SerializeField] private int _maxAmmo;
+    public int Ammo { get; private set; }
     public float TimeReload;
     public float TimeBetweenShoots;
-    public GameObject _Bullet;
-
-
+    
     protected void Shoot()
     {
         if (_currentGunConditions == GunConditions.Reloading) return;
-        StartCoroutine(Ammo > 0 ? Shooting() : ReloadAmmo());
+        StartCoroutine(Ammo > 0 ? Shooting() : FullReload());
     }
 
     protected void Reload()
     {
         if (Ammo == _maxAmmo) return;
-        StartCoroutine(ReloadAmmo());
+        StartCoroutine(FullReload());
     }
     
     private IEnumerator Shooting()
     {
         _currentGunConditions = GunConditions.Reloading;
-        yield return Instantiate(_Bullet, _Bullet.transform.position, _Bullet.transform.rotation);
+        yield return Instantiate(_bullet, _bullet.transform.position, _bullet.transform.rotation);
         yield return new WaitForSeconds(TimeBetweenShoots);
         Ammo--;
         _currentGunConditions = GunConditions.Shoot;
     }
 
-    private IEnumerator ReloadAmmo()
+    private IEnumerator FullReload()
     {
         _currentGunConditions = GunConditions.Reloading;
         yield return new WaitForSeconds(TimeReload);
+        Ammo = _maxAmmo;
         _currentGunConditions = GunConditions.Shoot;
+    }
+
+    protected void ReloadAmmo()
+    {
         Ammo = _maxAmmo;
     }
     
+    protected virtual void Start()
+    {
+        ReloadAmmo();
+    }
+
 }
