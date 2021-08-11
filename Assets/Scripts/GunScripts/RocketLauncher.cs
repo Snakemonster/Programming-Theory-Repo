@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class RocketLauncher : Gun
 {
-    //need to add radius of damage
+    protected override void Start() //POLYMORPHISM
+    {
+        ReloadAmmo();
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0)) Shoot();
