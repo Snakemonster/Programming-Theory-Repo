@@ -10,7 +10,8 @@ public class Player : MonoBehaviour
     private float _mouseX;
     private float _xRotation;
     private CharacterController _controller;
-    private GameObject _gun;
+    private GameObject[] _guns;
+    public GameObject _currentGun { get; private set; }
 
     private Vector2 _inputDirection;
     private Vector3 _velocity;
@@ -23,8 +24,8 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        _gun = GameObject.FindGameObjectWithTag("Gun");
         _controller = GetComponent<CharacterController>();
+        SetGun();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         SetSpeed();
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        SwitchGun();
         UpdateMouseLook();
         UpdateMovement();
         UpdateSpeed();
@@ -46,7 +48,7 @@ public class Player : MonoBehaviour
         _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
 
         cameraPlayer.localEulerAngles = Vector3.right * _xRotation;
-        _gun.transform.localEulerAngles = new Vector3(_gun.transform.rotation.x, 90, _xRotation);
+        _currentGun.transform.localEulerAngles = new Vector3(_currentGun.transform.rotation.x, 90, _xRotation);
         
         transform.Rotate(Vector3.up * (_mouseY * mouseSensitivity));
     }
@@ -67,5 +69,29 @@ public class Player : MonoBehaviour
     {
         _runSpeed = 2 * walkSpeed;
         _currentSpeed = walkSpeed;
+    }
+
+    private void SetGun()
+    {
+        _guns = GameObject.FindGameObjectsWithTag("Gun");
+        _currentGun = _guns[0];
+        _guns[1].gameObject.SetActive(false);
+    }
+    private void SwitchGun()
+    {
+        if (Input.GetKeyDown(KeyCode.Keypad1) && _currentGun.gameObject != _guns[0].gameObject)
+        {
+            _guns[0].gameObject.SetActive(true);
+            _guns[1].gameObject.SetActive(false);
+            _guns[0].GetComponent<Gun>().Reload();
+            _currentGun = _guns[0];
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad2) && _currentGun.gameObject != _guns[1].gameObject)
+        {
+            _guns[0].gameObject.SetActive(false);
+            _guns[1].gameObject.SetActive(true);
+            _guns[1].GetComponent<Gun>().Reload();
+            _currentGun = _guns[1];
+        }
     }
 }

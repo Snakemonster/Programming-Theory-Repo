@@ -5,21 +5,21 @@ using UnityEngine;
 
 public abstract class Gun : MonoBehaviour //INHERITANCE - parent
 {
-    [SerializeField] private Transform _bulletSpawner;
-    [SerializeField] private GameObject _bullet;
+    [SerializeField] protected Transform _bulletSpawner;
+    [SerializeField] protected GameObject _bullet;
     [SerializeField] private int _maxAmmo;
     public GunConditions CurrentGunConditions { get; private set; } //ENCAPSULATION
-    public int Ammo { get; private set; } //ENCAPSULATION
+    public int Ammo { get; protected set; } //ENCAPSULATION
     public float TimeReload;
     public float TimeBetweenShoots;
     
-    protected void Shoot()
+    protected virtual void Shoot()
     {
         if (CurrentGunConditions == GunConditions.FullReloading || CurrentGunConditions == GunConditions.ReloadingBetweenShoots) return;
         StartCoroutine(Ammo > 0 ? Shooting() : FullReload());
     }
 
-    protected void Reload()
+    public void Reload()
     {
         if (Ammo == _maxAmmo) return;
         StartCoroutine(FullReload());
@@ -34,7 +34,7 @@ public abstract class Gun : MonoBehaviour //INHERITANCE - parent
         CurrentGunConditions = GunConditions.Shoot;
     }
 
-    private IEnumerator FullReload()
+    protected IEnumerator FullReload()
     {
         CurrentGunConditions = GunConditions.FullReloading;
         yield return new WaitForSeconds(TimeReload);
@@ -42,12 +42,12 @@ public abstract class Gun : MonoBehaviour //INHERITANCE - parent
         CurrentGunConditions = GunConditions.Shoot;
     }
 
-    protected void ReloadAmmo()
+    private void ReloadAmmo()
     {
         Ammo = _maxAmmo;
     }
     
-    protected virtual void Start() //POLYMORPHISM
+    protected void Start()
     {
         ReloadAmmo();
     }
