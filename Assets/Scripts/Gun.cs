@@ -3,18 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Gun : MonoBehaviour
+public abstract class Gun : MonoBehaviour //INHERITANCE - parent
 {
-    [SerializeField] private GunConditions _currentGunConditions;
+    [SerializeField] private Transform _bulletSpawner;
     [SerializeField] private GameObject _bullet;
     [SerializeField] private int _maxAmmo;
-    public int Ammo { get; private set; }
+    public GunConditions CurrentGunConditions { get; private set; } //ENCAPSULATION
+    public int Ammo { get; private set; } //ENCAPSULATION
     public float TimeReload;
     public float TimeBetweenShoots;
     
     protected void Shoot()
     {
-        if (_currentGunConditions == GunConditions.Reloading) return;
+        if (CurrentGunConditions == GunConditions.FullReloading || CurrentGunConditions == GunConditions.ReloadingBetweenShoots) return;
         StartCoroutine(Ammo > 0 ? Shooting() : FullReload());
     }
 
@@ -26,19 +27,19 @@ public abstract class Gun : MonoBehaviour
     
     private IEnumerator Shooting()
     {
-        _currentGunConditions = GunConditions.Reloading;
-        yield return Instantiate(_bullet, _bullet.transform.position, _bullet.transform.rotation);
+        CurrentGunConditions = GunConditions.ReloadingBetweenShoots;
+        yield return Instantiate(_bullet, _bulletSpawner.transform.position, _bulletSpawner.transform.rotation);
         yield return new WaitForSeconds(TimeBetweenShoots);
         Ammo--;
-        _currentGunConditions = GunConditions.Shoot;
+        CurrentGunConditions = GunConditions.Shoot;
     }
 
     private IEnumerator FullReload()
     {
-        _currentGunConditions = GunConditions.Reloading;
+        CurrentGunConditions = GunConditions.FullReloading;
         yield return new WaitForSeconds(TimeReload);
         Ammo = _maxAmmo;
-        _currentGunConditions = GunConditions.Shoot;
+        CurrentGunConditions = GunConditions.Shoot;
     }
 
     protected void ReloadAmmo()
@@ -46,7 +47,7 @@ public abstract class Gun : MonoBehaviour
         Ammo = _maxAmmo;
     }
     
-    protected virtual void Start()
+    protected virtual void Start() //POLYMORPHISM
     {
         ReloadAmmo();
     }

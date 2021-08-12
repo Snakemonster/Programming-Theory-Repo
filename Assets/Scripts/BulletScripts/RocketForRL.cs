@@ -2,15 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RocketForRL : MonoBehaviour
+public class RocketForRL : MonoBehaviour //INHERITANCE - child
 {
-    // Start is called before the first frame update
+    //need to add radius of damage
     void Start()
     {
         
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         

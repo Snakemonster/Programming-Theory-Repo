@@ -1,7 +1,8 @@
 public enum GunConditions
 {
     Shoot,
-    Reloading
+    ReloadingBetweenShoots,
+    FullReloading
 }
 
 public enum GunMode
