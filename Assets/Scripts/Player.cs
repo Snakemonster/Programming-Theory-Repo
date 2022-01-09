@@ -83,14 +83,14 @@ public class Player : MonoBehaviour
         {
             _guns[0].gameObject.SetActive(true);
             _guns[1].gameObject.SetActive(false);
-            _guns[0].GetComponent<Gun>().Reload();
+            if(_guns[0].GetComponent<Gun>().Ammo == 0) _guns[0].GetComponent<Gun>().Reload();
             _currentGun = _guns[0];
         }
         else if (Input.GetKeyDown(KeyCode.Keypad2) && _currentGun.gameObject != _guns[1].gameObject)
         {
             _guns[0].gameObject.SetActive(false);
             _guns[1].gameObject.SetActive(true);
-            _guns[1].GetComponent<Gun>().Reload();
+            if(_guns[1].GetComponent<Gun>().Ammo == 0) _guns[1].GetComponent<Gun>().Reload();
             _currentGun = _guns[1];
         }
     }
