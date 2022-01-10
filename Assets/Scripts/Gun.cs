@@ -15,7 +15,7 @@ public abstract class Gun : MonoBehaviour //INHERITANCE - parent
     
     protected virtual void Shoot()
     {
-        if (CurrentGunConditions == GunConditions.FullReloading || CurrentGunConditions == GunConditions.ReloadingBetweenShoots) return;
+        if (CurrentGunConditions is GunConditions.FullReloading or GunConditions.ReloadingBetweenShoots) return;
         StartCoroutine(Ammo > 0 ? Shooting() : FullReload());
     }
 

@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
         _mouseX = Input.GetAxis("Mouse Y");
         
         _xRotation -= _mouseX;
-        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
+        _xRotation = Mathf.Clamp(_xRotation, -89f, 89f);
 
         cameraPlayer.localEulerAngles = Vector3.right * _xRotation;
         _currentGun.transform.localEulerAngles = new Vector3(_currentGun.transform.rotation.x, 90, _xRotation);
